@@ -31,13 +31,17 @@ def nan_filler(df: pd.DataFrame, old_nan):
     df.replace(old_nan, np.nan, inplace=True)
 
 
-def fill_numeric_knn(df: pd.DataFrame, imputer_params: dict = {"n_neighbors": 5, "metric": "nan_euclidean", "weights": "uniform"})->pd.DataFrame:
+def fill_numeric_knn(df: pd.DataFrame, scaler, imputer_params: dict = {"n_neighbors": 5, "metric": "nan_euclidean", "weights": "uniform"})->pd.DataFrame:
     """
     """
+    # Scaling
+    columns = df.columns
+    scl = scaler()
+    df = scl.fit_transform(df)
     knn_imputer = KNNImputer(**imputer_params)
     transformed_df = knn_imputer.fit_transform(df)
     out_df = pd.DataFrame(transformed_df)
-    out_df.columns = df.columns
+    out_df.columns = columns
     return out_df
 
 
